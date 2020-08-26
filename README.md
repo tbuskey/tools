@@ -16,6 +16,7 @@ Flexy artifact to CLI login
 * . setup-ocs.sh
 
 ## Result
+* move artifacts from ~/Download to current directory
 * extract info from artifacts
 * download & extract oc from OCP console
 * use oc to login to OCP
