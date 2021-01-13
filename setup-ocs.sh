@@ -8,6 +8,11 @@
 #unset https_proxy
 #no_proxy=localhost,127.0.0.0,127.0.1.1,127.0.1.1,local.home
 
+# app.ci cluster: https://console-openshift-console.apps.ci.l2s4.p1.openshiftapps.com/
+# login with github for personal account
+# copy login -> back to login -> click github
+# Display Token:
+#    oc login --token=<YOUR TOKEN> --server=https://api.ci.l2s4.p1.openshiftapps.com:6443
 
 export KUBECONFIG="$PWD/config"
 #alias oc='./oc'
@@ -88,7 +93,7 @@ fi
 
 export INSTANCE_NAME_PREFIX=$(echo $clustername | cut -d. -f2)
 export cloud=$(echo $clustername | cut -d. -f4)
-export console=$(grep https://console openshift_install.log  | sed 's/^.*https:/https:/' | tr -d '"' )
+export console=$(grep https://console openshift_install.log  | sed 's/^.*https:/https:/' | sed 's/health.*$//' | tr -d '"' )
 unset oc_source
 
 case $cloud in
