@@ -72,6 +72,12 @@ then
     echo "api${var}:lb" > host.spec
 fi
 
+if [ ! -f kubeadmin-password ]
+then
+    var=$(grep passw openshift_install.log | awk '{print $NF}' | tr -d '["\\]')
+    echo $var > kubeadmin-password
+    echo "Derived passwd: $var"
+fi
 
 grep -q , host.spec
 var=$?
@@ -182,7 +188,7 @@ fi
     echo '---------------'
 
 echo $err
-
+echo "Update opm upstream: /home/tbuskey/go/src/github.com/tbuskey/operator-registry/bin/opm to ~/working"
 echo "$PATH"
 echo 'PATH=$PWD:$PATH'
 echo 'PATH=$PWD:/home/tbuskey/bin/linux:/home/tbuskey/bin:/bin:/usr/bin:/sbin:/usr/sbin:/etc:/usr/local/bin:/usr/local/sbin:/usr/local/go/bin:/home/tbuskey/go/bin:/home/tbuskey/working'
