@@ -22,6 +22,7 @@ DOWNLOADS="$HOME/Downloads"
 err=0
 errfile=""
 proxy=1
+export GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/legacy_credentials/tbuskey@redhat.com/adc.json 
 
 if [ -x ../openshift-tests ]
 then
@@ -66,19 +67,30 @@ do
 done
 
 #api.tbuskey-qe.qe.devcluster.openshift.com:lb
-if [ ! -f host.spec ]
+if [ ! -f host.spec ]  # we can create it from other sources
 then
-    var=$(grep 'https://console' openshift_install.log | sed 's/.*console.apps//' | tr -d '"')
-    echo "api${var}:lb" > host.spec
+    if [  -f kubeconfig ]
+    then
+	grep server: kubeconfig | sed 's/^.*https...//' | sed 's/6443$/lb/'  > host.spec
+    else
+	var=$(grep 'https://console' openshift_install.log | sed 's/.*console.apps//' | tr -d '"')
+	echo "api${var}:lb" > host.spec
+    fi
 fi
 
 if [ ! -f kubeadmin-password ]
 then
-    var=$(grep passw openshift_install.log | awk '{print $NF}' | tr -d '["\\]')
-    echo $var > kubeadmin-password
-    echo "Derived passwd: $var"
+    if [ -f openshift_install.log ]
+    then
+	var=$(grep passw openshift_install.log | awk '{print $NF}' | tr -d '["\\]')
+	echo $var > kubeadmin-password
+	echo "Derived passwd: $var"
+    else
+	echo "no kubeadmin-password"
+    fi
 fi
 
+# get clustername from host.spec
 grep -q , host.spec
 var=$?
 if [ $var -eq 0 ]
@@ -99,7 +111,10 @@ fi
 
 export INSTANCE_NAME_PREFIX=$(echo $clustername | cut -d. -f2)
 export cloud=$(echo $clustername | cut -d. -f4)
-export console=$(grep https://console openshift_install.log  | sed 's/^.*https:/https:/' | sed 's/health.*$//' | tr -d '"' )
+#export console=$(grep https://console openshift_install.log  | sed 's/^.*https:/https:/' | sed 's/health.*$//' | tr -d '"' )
+# no, we have host.spec -> clustername.  Use it!
+export console=$(echo $clustername | sed 's@^api@https://console-openshift-console.apps@')
+
 unset oc_source
 
 case $cloud in
@@ -108,6 +123,7 @@ case $cloud in
 	;;
     azure)
 	export oc_source="downloads-openshift-console.apps.$INSTANCE_NAME_PREFIX.qe.$cloud.devcluster.openshift.com"
+	export AZURE_AUTH_LOCATION=~/working/azure.json 
 	;;
     qe)
 	echo "rhcloud"
@@ -147,6 +163,7 @@ fi
 if [ $proxy -eq 0 ]
 then
     echo "http_proxy is $http_proxy"
+    echo $http_proxy | tr '[:@/]' ' '
 fi
 
 if [ ! -x oc ]
@@ -173,6 +190,11 @@ else
 	export oc_olm=$(./oc get pods -n openshift-operator-lifecycle-manager | awk '/olm-operator/{print $1}')
 	export oc_prom_token=$(./oc sa get-token prometheus-k8s -n openshift-monitoring)
     fi
+fi
+
+if [ $proxy -eq 0 ]
+then
+    echo "http_proxy is $(echo $http_proxy | tr '[:@/]' ' ')"
 fi
 
 if [ $err -ne 0 ]
