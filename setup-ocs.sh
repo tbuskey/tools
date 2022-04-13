@@ -214,3 +214,19 @@ echo "Update opm upstream: /home/tbuskey/go/src/github.com/tbuskey/operator-regi
 echo "$PATH"
 echo 'PATH=$PWD:$PATH'
 echo 'PATH=$PWD:/home/tbuskey/bin/linux:/home/tbuskey/bin:/bin:/usr/bin:/sbin:/usr/sbin:/etc:/usr/local/bin:/usr/local/sbin:/usr/local/go/bin:/home/tbuskey/go/bin:/home/tbuskey/working'
+
+# for https://github.com/openshift/verification-tests
+export BUSHSLICER_DEFAULT_ENVIRONMENT=ocp4.10
+export OPENSHIFT_ENV_OCP4_HOSTS=$(cat host.spec)
+export OPENSHIFT_ENV_OCP4_USER_MANAGER_USERS=user1:redhat,user2:redhat
+export OPENSHIFT_ENV_OCP4_ADMIN_CREDS_SPEC=$PWD/kubeconfig
+export BUSHSLICER_CONFIG='
+global:
+  browser: firefox
+environments:
+  ocp4:
+    version: "4.10.3"
+    #api_port: 443	# For HA clusters, both 3.x and 4.x
+    #api_port: 6443	# For non-HA 4.x clusters
+    #web_console_url: https://console-openshift-console.apps.*.openshift.com
+'

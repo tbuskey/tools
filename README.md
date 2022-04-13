@@ -3,6 +3,7 @@ Flexy artifact to CLI login
 ## Assumptions
 
 * Artifacts downloaded to ~/Download
+  * get-flexy-artifacts.sh will grab these from your flexy job
   * hosts.spec
   * kubeadmin-password
   * kubeconfig
@@ -11,8 +12,10 @@ Flexy artifact to CLI login
   
 ## Use
 * download all the artifacts from Flexy to ~/Download
+  * not needed if you use get-flexy-artifacts.sh!
 * mkdir <workdir> && cd <workdir>
-* copy setup-ocs.sh and cleanup.sh into <workdir>
+* copy setup-ocs.sh and cleanup.sh and get-flexy-artifacts.sh into <workdir>
+  * ./get-flexy-artifacts.sh <FlexyID> # instead of manualy downloading
 * . setup-ocs.sh
 
 ## Result
