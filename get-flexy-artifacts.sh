@@ -12,6 +12,15 @@ workdir/install-dir/auth/kubeconfig
 workdir/install-dir/cluster_info.yaml
 '
 
+# do . ../cleanup.sh equiv
+unset no_proxy
+unset http_proxy
+unset https_proxy
+for i in oc* kube* host.spec openshift_install.log kubeadmin-password kubeconfig cluster_info.yaml $proxy_sh
+do
+	[ -f $i ] && rm $i
+done
+
 
 for i in $artifacts
 do

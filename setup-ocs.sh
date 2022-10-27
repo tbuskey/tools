@@ -170,6 +170,7 @@ if [ ! -x oc ]
 then
     echo "I don't see ./oc.  Check for proxy"
 else    
+     hash -d oc # remove oc from the cache!
     ./oc login $clustername:6443 -u kubeadmin -p $(cat kubeadmin-password) --insecure-skip-tls-verify=true
     login=$?
     if [ $login -ne 0 ]
@@ -184,6 +185,11 @@ else
 	echo ''
 	cat kubeadmin-password
 	echo ''
+
+	echo $console > console
+	cat kubeadmin-password >> console
+	echo ''  >> console
+
 
 	export oc_catalog=$(./oc get pods -n openshift-operator-lifecycle-manager | awk '/catalog/{print $1}')
 
@@ -209,12 +215,21 @@ fi
     echo "oc login $clustername:6443 -u kubeadmin -p $(cat kubeadmin-password) --insecure-skip-tls-verify=true"
     echo '---------------'
 
+# oc config view --flatten > ${KUBECONFIG}
+
 echo $err
 echo "Update opm upstream: /home/tbuskey/go/src/github.com/tbuskey/operator-registry/bin/opm to ~/working"
 echo "$PATH"
 echo 'PATH=$PWD:$PATH'
 echo 'PATH=$PWD:/home/tbuskey/bin/linux:/home/tbuskey/bin:/bin:/usr/bin:/sbin:/usr/sbin:/etc:/usr/local/bin:/usr/local/sbin:/usr/local/go/bin:/home/tbuskey/go/bin:/home/tbuskey/working'
 
+echo ''
+echo $console
+cat kubeadmin-password
+echo ''
+echo ''
+
+	
 # for https://github.com/openshift/verification-tests
 export BUSHSLICER_DEFAULT_ENVIRONMENT=ocp4.10
 export OPENSHIFT_ENV_OCP4_HOSTS=$(cat host.spec)
