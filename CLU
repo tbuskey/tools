@@ -1,0 +1,17 @@
+#!/bin/bash
+
+oc get og,sub,csv,pod 
+oc get ContainerRuntimeConfig,mcp,ImageContentSourcePolicy,ImageTagMirrorSet,ImageDigestMirrorSet,deploy
+oc get node -l node-role.kubernetes.io/worker= 
+oc get kataconfig 
+oc get kataconfig example-kataconfig -o=jsonpath={.status.installationStatus.IsInProgress}{.status.unInstallationStatus.inProgress.status}
+echo ''
+oc get sub sandboxed-containers-operator  -o=jsonpath={.spec.channel}
+echo ''
+oc get peerpodconfig peerpodconfig-openshift -o=jsonpath={.spec.limit}
+echo ''
+oc get kataconfig example-kataconfig -o=jsonpath='{.status.conditions[?(@.type=="InProgress")].status}' 
+echo
+oc get peerpod,runtimeclass,job
+echo
+
