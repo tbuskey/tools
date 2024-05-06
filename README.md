@@ -1,4 +1,4 @@
-Flexy artifact to CLI login
+# Flexy artifact to CLI login
 
 ## Assumptions
 
@@ -9,7 +9,7 @@ Flexy artifact to CLI login
   * kubeconfig
   * openshift_install.log
   * client_proxy_setting.sh - IFF it exists
-  
+
 ## Use
 * download all the artifacts from Flexy to ~/Download
   * not needed if you use get-flexy-artifacts.sh!
@@ -32,5 +32,8 @@ You can . setup-ocs.sh repeatedly
 
 ## Cleanup
 . cleanup.sh
-Removes all the artifacts
-  
+Removes all the artifacts - rarely used
+
+# Azure/AWS credentials for peer-pods
+AZURE-PP.sh uses templates from test/extended/testdata/kata/ in the https://github.com/openshift/openshift-tests-private repo to create & apply peer-pods-cm and peer-pods-secret for Azure.
+There are templates for AWS and libvirt, but I have not scripted them.
